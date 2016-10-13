@@ -2,8 +2,8 @@
 //  Player.swift
 //  Pirate Fleet
 //
-//  Created by Jarrod Parkes on 8/27/15.
-//  Copyright © 2015 Udacity. All rights reserved.
+//  Edited by Emanuele Bartolomucci on 2016/08/17.
+//
 //
 
 import UIKit
@@ -23,7 +23,7 @@ class Player {
     
     var playerDelegate: PlayerDelegate?
     var playerType: PlayerType
-    var lastHitPenaltyCell: Cell? = nil
+    var lastHitPenaltyCell: PenaltyCell? = nil
     var numberOfMisses: Int = 0
     var numberOfHits: Int = 0
     
@@ -77,7 +77,7 @@ class Player {
         return shipsReady && minesReady && monstersReady
     }
     
-    // MARK: Attacking  
+    // MARK: Attacking
     
     func attackPlayer(player: Player, atLocation: GridLocation) {
         
@@ -93,17 +93,17 @@ class Player {
         // hit a seamonster?
         if let seamonster = player.grid[atLocation.x][atLocation.y].seamonster {
             lastHitPenaltyCell = seamonster
-            numberOfMisses += 1
+            numberOfMisses +=1
             player.gridView.markImageAtLocation(seamonster.location, image: Settings.Images.SeaMonsterHit)
         }
         
         // hit a ship?
         if !player.gridViewController.fireCannonAtLocation(atLocation) {
-            numberOfMisses += 1
+            numberOfMisses +=1
             player.gridView.markImageAtLocation(atLocation, image: Settings.Images.Miss)
         } else {
             // we hit something!
-            numberOfHits += 1
+            numberOfHits +=1
         }
         
         if let playerDelegate = playerDelegate {
@@ -141,7 +141,7 @@ class Player {
                 } else {
                     
                     hitShip = true
-                    numberOfHits += 1
+                    numberOfHits +=1
                     performedMoves.insert(location)
                     
                     if let playerDelegate = playerDelegate {
@@ -173,7 +173,7 @@ class Player {
                     if let mine = player.grid[location.x][location.y].mine {
                         hitMine = true
                         self.lastHitPenaltyCell = mine
-                        self.gridViewController.mineCount -= 1
+                        self.gridViewController.mineCount -=1
                         player.gridViewController.fireCannonAtLocation(mine.location)
                         
                         performedMoves.insert(mine.location)
@@ -205,8 +205,8 @@ class Player {
     // MARK: Modify Grid
     
     func revealShipAtLocation(location: GridLocation) {
-//        let connectedCells = grid[location.x][location.y].ship?.cells
-//        gridView.revealLocations(connectedCells!)
+        let connectedCells = grid[location.x][location.y].ship?.cells
+        gridView.revealLocations(connectedCells!)
     }
     
     func addPlayerShipsMinesMonsters(numberOfMines: Int = 0, numberOfSeamonsters: Int = 0) {
@@ -218,16 +218,16 @@ class Player {
                 
                 var shipLocation = RandomGridLocation()
                 var vertical = Int(arc4random_uniform(UInt32(2))) == 0 ? true : false
-                var ship = Ship(length: shipLength, location: shipLocation, isVertical: vertical, isWooden: false, hitTracker: HitTracker())
+                var ship = Ship(length: shipLength, location: shipLocation, isVertical: vertical, isWooden: false)
                 
                 while !gridViewController.addShip(ship, playerType: .Computer) {
                     shipLocation = RandomGridLocation()
                     vertical = Int(arc4random_uniform(UInt32(2))) == 0 ? true : false
-                    ship = Ship(length: shipLength, location: shipLocation, isVertical: vertical, isWooden: false, hitTracker: HitTracker())
+                    ship = Ship(length: shipLength, location: shipLocation, isVertical: vertical, isWooden: false)
                 }
             }
         }
-                
+        
         // random mine placement
         for _ in 0..<numberOfMines {
             var location = RandomGridLocation()
