@@ -19,8 +19,8 @@ class Computer: Player {
             gridViewController.gridView.delegate = newValue
         }
     }
-    private var nextMoves = Set<GridLocation>()
-    private var shipHitTrace = [GridLocation]()
+    fileprivate var nextMoves = Set<GridLocation>()
+    fileprivate var shipHitTrace = [GridLocation]()
     
     // MARK: Initializers
     
@@ -31,13 +31,13 @@ class Computer: Player {
     
     override func reset() {
         super.reset()
-        nextMoves.removeAll(keepCapacity: true)
-        shipHitTrace.removeAll(keepCapacity: true)
+        nextMoves.removeAll(keepingCapacity: true)
+        shipHitTrace.removeAll(keepingCapacity: true)
     }
     
     // MARK: Attacking
     
-    func attack(player: Player) {
+    func attack(_ player: Player) {
         
         var move: GridLocation
         
@@ -58,7 +58,7 @@ class Computer: Player {
         
         if player.gridViewController.fireCannonAtLocation(move) {
             shipHitTrace.append(move)
-            if Settings.ComputerDifficulty == .Advanced && lastHitPenaltyCell == nil { addEducatedMoves() }
+            if Settings.ComputerDifficulty == .advanced && lastHitPenaltyCell == nil { addEducatedMoves() }
         } else {
             player.gridViewController.gridView.markImageAtLocation(move, image: Settings.Images.Miss)
         }
@@ -75,7 +75,7 @@ class Computer: Player {
     
     // MARK: Adding New Moves
     
-    private func addEducatedMoves() {
+    fileprivate func addEducatedMoves() {
         guard shipHitTrace.count != 0 else { return }
         
         // attempt adjacent locations (N, S, E, W) for last element in hit trace
@@ -92,11 +92,11 @@ class Computer: Player {
         if nextMoves.isEmpty { nextMoves.insert(getRandomMove()) }
     }
     
-    private func isEducatedMoveValid(location: GridLocation) -> Bool {
+    fileprivate func isEducatedMoveValid(_ location: GridLocation) -> Bool {
         return locationInBounds(location) && !performedMoves.contains(location) && !nextMoves.contains(location)
     }
     
-    private func getRandomMove() -> GridLocation {
+    fileprivate func getRandomMove() -> GridLocation {
         var randomMoveLocation = RandomGridLocation()
         while performedMoves.contains(randomMoveLocation) {
             randomMoveLocation = RandomGridLocation()
